@@ -15,7 +15,7 @@ const data = [
 
 const testimonials = [
   {
-    name: "John Doe",
+    name: "Jake Bale",
     message: "Layanan luar biasa! Sangat merekomendasikan.",
     image: "https://randomuser.me/api/portraits/men/1.jpg",
   },
@@ -25,7 +25,7 @@ const testimonials = [
     image: "https://randomuser.me/api/portraits/women/2.jpg",
   },
   {
-    name: "Michael Johnson",
+    name: "David Mauser",
     message: "Pelayanan customer support sangat membantu!",
     image: "https://randomuser.me/api/portraits/men/3.jpg",
   },
@@ -120,11 +120,11 @@ export default function Dashboard() {
           <h2 className="text-gray-900 text-xl font-semibold">Total Users</h2>
           <p className="text-gray-700 text-lg">120</p>
         </div>
-        <div className="bg-green-100 p-6 rounded-lg shadow-md">
+        <div className="bg-blue-100 p-6 rounded-lg shadow-md">
           <h2 className="text-gray-900 text-xl font-semibold">Total Rooms</h2>
           <p className="text-gray-700 text-lg">45</p>
         </div>
-        <div className="bg-yellow-100 p-6 rounded-lg shadow-md">
+        <div className="bg-blue-100 p-6 rounded-lg shadow-md">
           <h2 className="text-gray-900 text-xl font-semibold">Active Transactions</h2>
           <p className="text-gray-700 text-lg">30</p>
         </div>
@@ -213,7 +213,7 @@ export default function Dashboard() {
     </div>
 
 	{/* About */}
-	<section className="bg-gray-100 py-16">
+	<section className="bg-white py-16">
       <div className="container mx-auto text-center px-6">
         <h2 className="text-3xl font-bold text-gray-900">About Us</h2>
         <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
@@ -326,9 +326,9 @@ export default function Dashboard() {
           {/* Copyright */}
           <div className="text-center text-gray-600 mt-8 border-t pt-6">
           <p>
-            © Copyright <span className="font-semibold text-gray-800">EstateAgency</span> All Rights Reserved
+            © Copyright <span className="font-semibold text-gray-800">RagaEstate</span> All Rights Reserved
           </p>
-          <p className="text-blue-600">Designed by BootstrapMade</p>
+          <p className="text-blue-600">Designed by TailWind</p>
           </div>
       
           {/* Scroll to Top Button */}

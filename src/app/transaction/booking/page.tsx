@@ -1,105 +1,94 @@
-'use client';
-import { useState } from "react";
+"use client";
 
-type Booking = {
-  id: number;
-  userName: string;
-  email: string;
-  roomName: string;
-  checkIn: string;
-  checkOut: string;
-};
+import { useSearchParams } from "next/navigation";
 
-export default function BookingManagement() {
-  const [bookings, setBookings] = useState<Booking[]>([]);
+const properties = [
+  {
+    id: 1,
+    name: "204 Mount Olive Road Two",
+    price: "$1200",
+    area: "340m2",
+    beds: 5,
+    baths: 2,
+    garages: 1,
+    image: "https://i.pinimg.com/474x/c7/33/fd/c733fd6e22d884f725d5de7daa7e1771.jpg",
+    description: "A beautiful and spacious home in a quiet neighborhood with modern amenities."
+  },
+  {
+    id: 2,
+    name: "Luxury Villa in Beverly Hills",
+    price: "$2500",
+    area: "500m2",
+    beds: 6,
+    baths: 4,
+    garages: 2,
+    image: "https://silpibuilders.com/wp-content/uploads/2021/12/w1.jpg",
+    description: "A stunning villa in the heart of Beverly Hills, offering luxury and comfort."
+  },
+  {
+    id: 3,
+    name: "Modern Apartment Downtown",
+    price: "$900",
+    area: "200m2",
+    beds: 3,
+    baths: 2,
+    garages: 1,
+    image: "https://www.hillam.com.au/wp-content/uploads/2015/08/South-Perth-Residence-II-400x300-c-default.jpg",
+    description: "A modern apartment in a prime downtown location, perfect for city living."
+  }
+];
 
-  const [formData, setFormData] = useState<Booking>({
-    id: 0,
-    userName: "",
-    email: "",
-    roomName: "",
-    checkIn: "",
-    checkOut: "",
-  });
-  const [isEditing, setIsEditing] = useState(false);
+export default function BookingPage() {
+  const searchParams = useSearchParams();
+  const propertyId = searchParams.get("id");
+  
+  const selectedProperty = properties.find((prop) => prop.id === Number(propertyId));
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleAddBooking = () => {
-    if (!formData.userName || !formData.email || !formData.roomName || !formData.checkIn || !formData.checkOut) return;
-
-    setBookings([...bookings, { ...formData, id: bookings.length + 1 }]);
-    setFormData({ id: 0, userName: "", email: "", roomName: "", checkIn: "", checkOut: "" });
-  };
-
-  const handleEditBooking = (booking: Booking) => {
-    setFormData(booking);
-    setIsEditing(true);
-  };
-
-  const handleSaveEdit = () => {
-    setBookings(
-      bookings.map((booking) =>
-        booking.id === formData.id ? { ...formData, id: Number(formData.id) } : booking
-      )
-    );
-    setFormData({ id: 0, userName: "", email: "", roomName: "", checkIn: "", checkOut: "" });
-    setIsEditing(false);
-  };
-
-  const handleDeleteBooking = (id: number) => {
-    setBookings(bookings.filter((booking) => booking.id !== id));
-  };
+  if (!selectedProperty) {
+    return <p className="text-center text-red-500">Properti tidak ditemukan.</p>;
+  }
 
   return (
-    <div className="w-full p-6">
-      <h2 className="text-black text-2xl font-bold mb-4">Booking Management</h2>
-
-      <div className="w-full mb-6 flex flex-wrap gap-4">
-        <input type="text" name="userName" placeholder="User Name" value={formData.userName} onChange={handleChange} className="border p-2 rounded flex-grow min-w-[200px]" />
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} className="border p-2 rounded flex-grow min-w-[200px]" />
-        <input type="text" name="roomName" placeholder="Room Name" value={formData.roomName} onChange={handleChange} className="border p-2 rounded flex-grow min-w-[200px]" />
-        <input type="date" name="checkIn" placeholder="Check-in Date" value={formData.checkIn} onChange={handleChange} className="border p-2 rounded flex-grow min-w-[200px]" />
-        <input type="date" name="checkOut" placeholder="Check-out Date" value={formData.checkOut} onChange={handleChange} className="border p-2 rounded flex-grow min-w-[200px]" />
-        {isEditing ? (
-          <button onClick={handleSaveEdit} className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
-        ) : (
-          <button onClick={handleAddBooking} className="bg-green-500 text-white px-4 py-2 rounded">Add</button>
-        )}
+    <div className="p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
+      {/* Image Section */}
+      <div className="w-full lg:w-1/2">
+        <img 
+          src={selectedProperty.image} 
+          alt={selectedProperty.name} 
+          className="w-full h-96 object-cover rounded-lg shadow-md" 
+        />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full border-collapse border border-gray-600">
-          <thead>
-            <tr className="bg-gray-600 text-left text-white">
-              <th className="border p-3">ID</th>
-              <th className="border p-3">User Name</th>
-              <th className="border p-3">Email</th>
-              <th className="border p-3">Room Name</th>
-              <th className="border p-3">Check-in</th>
-              <th className="border p-3">Check-out</th>
-              <th className="border p-3 text-center">Aksi</th>
-            </tr>
-          </thead>
+      {/* Details Section */}
+      <div className="w-full lg:w-1/2">
+        <h1 className="text-3xl font-bold text-gray-800">{selectedProperty.name}</h1>
+        <p className="text-lg text-blue-500 font-bold mt-2">{selectedProperty.price}</p>
+        <p className="text-gray-700 mt-4">{selectedProperty.description}</p>
+
+        <table className="mt-6 w-full border border-gray-600 text-left">
           <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.id} className="text-left text-white bg-slate-500">
-                <td className="border p-3">{booking.id}</td>
-                <td className="border p-3">{booking.userName}</td>
-                <td className="border p-3">{booking.email}</td>
-                <td className="border p-3">{booking.roomName}</td>
-                <td className="border p-3">{booking.checkIn}</td>
-                <td className="border p-3">{booking.checkOut}</td>
-                <td className="border p-3 text-center">
-                  <button onClick={() => handleEditBooking(booking)} className="bg-yellow-500 text-white px-3 py-1 rounded mx-1">Edit</button>
-                  <button onClick={() => handleDeleteBooking(booking.id)} className="bg-red-500 text-white px-3 py-1 rounded mx-1">Hapus</button>
-                </td>
-              </tr>
-            ))}
+            <tr className="border-b border-gray-600">
+              <td className="p-2 font-semibold text-gray-600">Area</td>
+              <td className="p-2 text-gray-600">{selectedProperty.area}</td>
+            </tr>
+            <tr className="border-b border-gray-600">
+              <td className="p-2 font-semibold text-gray-600">Beds</td>
+              <td className="p-2 text-gray-600">{selectedProperty.beds}</td>
+            </tr>
+            <tr className="border-b border-gray-600">
+              <td className="p-2 font-semibold text-gray-600">Baths</td>
+              <td className="p-2 text-gray-600">{selectedProperty.baths}</td>
+            </tr>
+            <tr>
+              <td className="p-2 font-semibold text-gray-600">Garages</td>
+              <td className="p-2 text-gray-600">{selectedProperty.garages}</td>
+            </tr>
           </tbody>
         </table>
+
+        <button className="mt-6 w-full bg-yellow-500 text-black py-3 rounded-lg font-semibold text-lg hover:bg-yellow-600 transition">
+          Lanjutkan Booking
+        </button>
       </div>
     </div>
   );

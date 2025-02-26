@@ -42,6 +42,7 @@ export default function UserManagement() {
     setUsers(users.filter((user) => user.id !== id));
   };
 
+
 	return (
 <div className="w-full p-6">
   <h2 className="text-black text-2xl font-bold mb-4">User Management</h2>
@@ -105,6 +106,31 @@ export default function UserManagement() {
       </tbody>
     </table>
   </div>
+
+  <div className="p-6 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">Daftar Pengguna</h1>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="p-3 text-left border-b">ID</th>
+              <th className="p-3 text-left border-b">Nama</th>
+              <th className="p-3 text-left border-b">Email</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id} className="border-b hover:bg-gray-50">
+                <td className="p-3">{user.id}</td>
+                <td className="p-3">{user.name}</td>
+                <td className="p-3">{user.email}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   {/* Footer */}
   <footer className="py-10 mt-64">
 			  <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
@@ -160,9 +186,9 @@ export default function UserManagement() {
 			  {/* Copyright */}
 			  <div className="text-center text-gray-600 mt-8 border-t pt-6">
 				<p>
-				  © Copyright <span className="font-semibold text-gray-800">EstateAgency</span> All Rights Reserved
+				  © Copyright <span className="font-semibold text-gray-800">RagaEstate</span> All Rights Reserved
 				</p>
-				<p className="text-blue-600">Designed by BootstrapMade</p>
+				<p className="text-blue-600">Designed by TailWind</p>
 			  </div>
 		
 			  {/* Scroll to Top Button */}

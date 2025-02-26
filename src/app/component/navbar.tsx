@@ -66,9 +66,6 @@ const Navbar = () => {
             <Link href="/dashboard" className="hover:text-blue-600">Dashboard</Link>
           </li>
           <li>
-            <Link href="/user" className="hover:text-blue-600">User</Link>
-          </li>
-          <li>
             <Link href="/room" className="hover:text-blue-600">Properti</Link>
           </li>
           {/* Dropdown Transaction */}
