@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
@@ -92,13 +93,42 @@ export default function Dashboard() {
 	},
   ];
   
+
+   {/*sidebar logic*/}
+        
+          const [showSidebar, setShowSidebar] = useState(false);
+          const router = useRouter();
+  
+          const sidebarRef = useRef<HTMLDivElement>(null);
+        
+          useEffect(() => {
+            function handleClickOutside(event: MouseEvent) {
+              if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+                setShowSidebar(false);
+              }
+            }
+          
+            if (showSidebar) {
+              document.addEventListener("mousedown", handleClickOutside);
+            }
+          
+            return () => {
+              document.removeEventListener("mousedown", handleClickOutside);
+            };
+          }, [showSidebar]);
   
 
   return (
-    <div className="p-6">
+    <div className="p-0">
+
+        <button
+          onClick={() => setShowSidebar(true)}
+          className="text-white px-2 py-0 rounded-full size-9 bg-gray-200 mb-4"
+        >
+          <img src="/menu.png" className="size-5"></img>
+        </button>
+
       {/* Carousel */}
-      <h1 className="text-3xl font-bold text-gray-800 mt-6">Dashboard</h1>
-      <p className="text-gray-600 mt-1 mb-3">Selamat datang di Raga Estate!</p>
       <div className="relative w-full h-[300px] overflow-hidden rounded-lg shadow-md">
 
         {carouselImages.map((image, index) => (
@@ -271,74 +301,69 @@ export default function Dashboard() {
 		</div>
     </section>
 
-	 {/* Footer */}
-    <footer className="py-10 mt-72">
-          <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 text-gray-700">
-          {/* Address */}
-          <div>
-            <h3 className="font-semibold">Address</h3>
-            <p>A108 Adam Street</p>
-            <p>New York, NY 535022</p>
-          </div>
-      
-          {/* Contact */}
-          <div>
-            <h3 className="font-semibold">Contact</h3>
-            <p>
-            <span className="font-bold">Phone:</span> +1 5589 55488 55
-            </p>
-            <p>
-            <span className="font-bold">Email:</span> info@example.com
-            </p>
-          </div>
-      
-          {/* Opening Hours */}
-          <div>
-            <h3 className="font-semibold">Opening Hours</h3>
-            <p>
-            <span className="font-bold">Mon-Sat:</span> 11AM - 11PM
-            </p>
-            <p>
-            <span className="font-bold">Sunday:</span> Closed
-            </p>
-          </div>
-      
-          {/* Follow Us */}
-          <div>
-            <h3 className="font-semibold">Follow Us</h3>
-            <div className="flex space-x-3 mt-3">
-            <div className="p-2 rounded-full border border-gray-400 hover:bg-gray-200 cursor-pointer">
-              <FaXTwitter className="text-gray-500" />
-            </div>
-            <div className="p-2 rounded-full border border-gray-400 hover:bg-gray-200 cursor-pointer">
-              <FaFacebookF className="text-gray-500" />
-            </div>
-            <div className="p-2 rounded-full border border-gray-400 hover:bg-gray-200 cursor-pointer">
-              <FaInstagram className="text-gray-500" />
-            </div>
-            <div className="p-2 rounded-full border border-gray-400 hover:bg-gray-200 cursor-pointer">
-              <FaLinkedinIn className="text-gray-500" />
-            </div>
-            </div>
-          </div>
-          </div>
-      
-          {/* Copyright */}
-          <div className="text-center text-gray-600 mt-8 border-t pt-6">
-          <p>
-            © Copyright <span className="font-semibold text-gray-800">RagaEstate</span> All Rights Reserved
-          </p>
-          <p className="text-blue-600">Designed by TailWind</p>
-          </div>
-      
-          {/* Scroll to Top Button */}
-          <button
-          className="fixed bottom-6 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-          ↑
-          </button>
-        </footer>
+    {showSidebar && (
+        <div
+          ref={sidebarRef}
+          className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 p-6 transition-transform duration-300"
+        >
+          <div className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 p-6 transition-transform duration-300">
+          <h2 className="text-xl font-bold mb-4 text-black">Sidebar Menu</h2>
+          <ul className="space-y-2 text-black">
+            <li>
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+              >
+                Dashboard
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => router.push("/room")}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+              >
+                Properti
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => router.push("/transaction/booking")}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+              >
+                Transaksi
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => router.push("/categories")}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+              >
+                Kategori
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => router.push("/user")}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+              >
+                User
+              </button>
+            </li>
+            <li>
+               <button
+                onClick={() => router.push("/")}
+                className="w-full text-left hover:bg-gray-100 p-2 rounded"
+                >
+                LogOut
+              </button>   
+            </li>
+          </ul>
+          
+        </div>
+        </div>
+      )}
+
+
     </div>
   );
 }

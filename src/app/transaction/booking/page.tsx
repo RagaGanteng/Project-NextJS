@@ -1,95 +1,110 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 
-const properties = [
-  {
-    id: 1,
-    name: "204 Mount Olive Road Two",
-    price: "$1200",
-    area: "340m2",
-    beds: 5,
-    baths: 2,
-    garages: 1,
-    image: "https://i.pinimg.com/474x/c7/33/fd/c733fd6e22d884f725d5de7daa7e1771.jpg",
-    description: "A beautiful and spacious home in a quiet neighborhood with modern amenities."
-  },
-  {
-    id: 2,
-    name: "Luxury Villa in Beverly Hills",
-    price: "$2500",
-    area: "500m2",
-    beds: 6,
-    baths: 4,
-    garages: 2,
-    image: "https://silpibuilders.com/wp-content/uploads/2021/12/w1.jpg",
-    description: "A stunning villa in the heart of Beverly Hills, offering luxury and comfort."
-  },
-  {
-    id: 3,
-    name: "Modern Apartment Downtown",
-    price: "$900",
-    area: "200m2",
-    beds: 3,
-    baths: 2,
-    garages: 1,
-    image: "https://www.hillam.com.au/wp-content/uploads/2015/08/South-Perth-Residence-II-400x300-c-default.jpg",
-    description: "A modern apartment in a prime downtown location, perfect for city living."
-  }
-];
+interface Booking {
+  id: number;
+  bookingDate: string;
+  roomId: number;
+}
 
-export default function BookingPage() {
+export default function TransactionPage() {
   const searchParams = useSearchParams();
-  const propertyId = searchParams.get("id");
-  
-  const selectedProperty = properties.find((prop) => prop.id === Number(propertyId));
+  const router = useRouter();
+  const name = searchParams.get("name") ?? "Unknown Property";
+  const price = searchParams.get("price") ?? "N/A";
+  const image = searchParams.get("image") ?? "/default-image.jpg";
 
-  if (!selectedProperty) {
-    return <p className="text-center text-red-500">Properti tidak ditemukan.</p>;
-  }
+  const [showSidebar, setShowSidebar] = useState(false);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  const accessToken = "MASUKKAN_TOKEN_DISINI"; // Ganti token dengan dinamis jika pakai auth
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const res = await fetch("https://simaru.amisbudi.cloud/api/bookings", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+          },
+        });
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        const data = await res.json();
+        setBookings(data);
+      } catch (err: any) {
+        setError(err.message);
+      }
+    };
+
+    fetchBookings();
+  }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        setShowSidebar(false);
+      }
+    }
+
+    if (showSidebar) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showSidebar]);
 
   return (
-    <div className="p-6 max-w-6xl mx-auto flex flex-col lg:flex-row gap-8">
-      {/* Image Section */}
-      <div className="w-full lg:w-1/2">
-        <img 
-          src={selectedProperty.image} 
-          alt={selectedProperty.name} 
-          className="w-full h-96 object-cover rounded-lg shadow-md" 
-        />
-      </div>
+    <div className="p-6">
+      <button
+        onClick={() => setShowSidebar(true)}
+        className="text-white px-2 py-0 rounded-full size-9 bg-gray-200 mb-4"
+      >
+        <img src="/menu.png" className="size-5" />
+      </button>
 
-      {/* Details Section */}
-      <div className="w-full lg:w-1/2">
-        <h1 className="text-3xl font-bold text-gray-800">{selectedProperty.name}</h1>
-        <p className="text-lg text-blue-500 font-bold mt-2">{selectedProperty.price}</p>
-        <p className="text-gray-700 mt-4">{selectedProperty.description}</p>
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">Transaction Status</h1>
 
-        <table className="mt-6 w-full border border-gray-600 text-left">
-          <tbody>
-            <tr className="border-b border-gray-600">
-              <td className="p-2 font-semibold text-gray-600">Area</td>
-              <td className="p-2 text-gray-600">{selectedProperty.area}</td>
-            </tr>
-            <tr className="border-b border-gray-600">
-              <td className="p-2 font-semibold text-gray-600">Beds</td>
-              <td className="p-2 text-gray-600">{selectedProperty.beds}</td>
-            </tr>
-            <tr className="border-b border-gray-600">
-              <td className="p-2 font-semibold text-gray-600">Baths</td>
-              <td className="p-2 text-gray-600">{selectedProperty.baths}</td>
-            </tr>
-            <tr>
-              <td className="p-2 font-semibold text-gray-600">Garages</td>
-              <td className="p-2 text-gray-600">{selectedProperty.garages}</td>
-            </tr>
-          </tbody>
-        </table>
+      {showSidebar && (
+        <div
+          ref={sidebarRef}
+          className="fixed left-0 top-0 h-full w-64 bg-white shadow-lg z-50 p-6 transition-transform duration-300"
+        >
+          <h2 className="text-xl font-bold mb-4 text-black">Sidebar Menu</h2>
+          <ul className="space-y-2 text-black">
+            <li><button onClick={() => router.push("/dashboard")} className="w-full text-left hover:bg-gray-100 p-2 rounded">Dashboard</button></li>
+            <li><button onClick={() => router.push("/room")} className="w-full text-left hover:bg-gray-100 p-2 rounded">Properti</button></li>
+            <li><button onClick={() => router.push("/transaction/booking")} className="w-full text-left hover:bg-gray-100 p-2 rounded">Transaksi</button></li>
+            <li><button onClick={() => router.push("/categories")} className="w-full text-left hover:bg-gray-100 p-2 rounded">Kategori</button></li>
+            <li><button onClick={() => router.push("/user")} className="w-full text-left hover:bg-gray-100 p-2 rounded">User</button></li>
+            <li><button onClick={() => router.push("/")} className="w-full text-left hover:bg-gray-100 p-2 rounded">LogOut</button></li>
+          </ul>
+        </div>
+      )}
 
-        <button className="mt-6 w-full bg-yellow-500 text-black py-3 rounded-lg font-semibold text-lg hover:bg-yellow-600 transition">
-          Lanjutkan Booking
-        </button>
-      </div>
+      {error ? (
+        <p className="text-red-500">Error: {error}</p>
+      ) : (
+        bookings.map((booking) => (
+          <div
+            key={booking.id}
+            className="flex flex-col md:flex-row gap-6 bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl mb-4"
+          >
+            <div className="w-full md:w-1/2">
+              <img src={image} alt={name} className="w-full h-40 object-cover rounded-lg shadow-md" />
+              <h2 className="text-xl font-semibold text-gray-700 mt-4">{name}</h2>
+              <p className="text-blue-500 font-bold">{price}</p>
+            </div>
+            <div className="w-full md:w-1/2 flex flex-col justify-center bg-gray-100 p-4 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800">Booking #{booking.id}</h3>
+              <p className="text-yellow-500 font-medium">Booking Date: {booking.bookingDate}</p>
+              <p className="text-gray-600 mt-2 text-sm">Room ID: {booking.roomId}</p>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 }
